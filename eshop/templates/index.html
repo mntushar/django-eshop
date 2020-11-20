@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<!-- body -->
+<div class="container-fluid mt-3">
+	<div class="row">
+
+
+		<!-- filter -->
+
+		<div class="col-lg-3 mx-auto">
+			<div class="list-group">
+
+				<a href="{% url 'home-deshboard' %}" class="list-group-item list-group-item-action">All Products</a>
+				<a href="#"
+					class="list-group-item list-group-item-action"></a>
+			</div>
+		</div>
+
+		<!-- all products -->
+		<div id='products' class="col-lg-9 mx-auto">
+			<form action="" class="" method="post">
+				{% csrf_token %}
+				<div class="row">
+					<div class="mb-3 ml-2 pl-4">
+						{{search_form.search}}
+						{{search_form.errors}}
+					</div>
+					<div class="mb-3">
+						<a  href="#"><button type="submit" class="btn btn-outline-success">Search</button></a>
+					</div>
+				</div>
+			</form>
+			<div class="row mx-auto">
+				{% for product in products %}
+				<div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
+					<img class="card-img-top" src="{{product.image.url}}" alt="Card image cap">
+					<div class="card-body">
+						<p class="card-title">{{product.name}}</p>
+						<p class="card-text"><b>{{product.price}}</b></p>
+						<!-- {{product  }} -->
+					</div>
+
+					<div class="card-footer p-0 no-gutters">
+
+						{% if product %}
+						<div class="row no-gutters">
+							<form action="" class="col-2 " method="post">
+								{% csrf_token %}
+								<a  href="{% url 'remove-item-card' product.id %}" type="submit" class="btn btn-block btn-light border-right">-</a>
+							</form>
+							<div class="text-center col">{{product}} in Cart</div>
+							<form action=" " class="col-2 " method="post">
+								{% csrf_token %}
+								<a  href="{% url 'add-item-card' product.id %}" type="submit" class="btn btn-block btn-light border-left">+</a>
+							</form>
+						</div>
+						{% endif %}
+
+					</div>
+
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+   <div class="border rounded p-4 m-4">
+        <p class="display-4 pl-4 ml-4">Your Cart</p>
+        <hr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Actin</th>
+                    <th>Sno.</th>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Select</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                
+                {% for product in products %}
+                <tr>
+                    <td><a  href="{% url 'remove-card-item' product.id %}" type="submit" class="btn btn-danger">-</a></td>
+                    <td>{{forloop.counter}}</td>
+                    <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.price}}</td>
+                    <td id="seb{{forloop.counter}}">
+                      <input type="submit" id="incress{{forloop.counter}}" value=" + " class="btn-sm btn-success mr-2">
+                      <input id="quantity{{forloop.counter}}" type="submit" value="1">
+                      <input id="decress{{forloop.counter}}" type="submit" value=" - " class="btn-sm btn-success ml-2">
+                    </td>
+                    <td><input type="checkbox" class="ml-3" id="selectcheckout{{forloop.counter}}" name="checkoutitem" value="{{product.price}}"></td>
+                    <td id="price{{forloop.counter}}"><input id="cprice{{forloop.counter}}" type="submit" value="0"></td>
+                    
+                </tr>
+
+                {% endfor %}
+               
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th colspan="4"></th>
+                    <th class="" colspan="">Total</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+        <hr>
+        <div class="m-3 p-3">
+            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-outline-info border rounded  col-lg-3 float-right">Check out</a>
+        </div>
+   </div>
+</div>
+
+
+<!-- modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+              Check Out Form
+          </h5>
+          <hr>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="m-2 p-3">
+            <form action="/check-out" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="">Address</label>
+                  <input type="text" name="address" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                  
+                </div>
+                <div class="form-group">
+                    <label for="">Phone</label>
+                    <input type="text" name="phone" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                  </div>
+
+                  <input type="submit" class="btn float-right btn-outline-info col-lg-6" value="Check out">
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+<script>
+  $(document).ready(function(){
+    //increment Quantity
+    $("[id^='incress']").click(function(){
+      var inc = $(this).next().val();
+      inc++;
+      $(this).next().val(inc);
+    });
+
+    //decrement Quantity
+    $("[id^='decress']").click(function(){
+      var dec = $(this).prev().val();
+      dec--;
+      $(this).prev().val(dec);
+    });
+
+    //select price
+    $("[id^='selectcheckout']").click(function(){
+      var price = $(this).val();
+      var p_td_id = $(this).parent().prev().attr('id');
+      var child_id = $('#' + p_td_id).children().map(function() {return this.id});
+      var quantity_id = child_id[1];
+      var quantity = $('#' + quantity_id).val();
+      var totla_price = quantity*price;
+      var totla_price_p_id = $(this).parent().next().attr('id')
+      var totla_price_c_id_arr = $('#' + totla_price_p_id).children().map(function() {return this.id});
+      var totla_price_c_id = totla_price_c_id_arr[0]
+      $('#' + totla_price_c_id).val(totla_price)
+      console.log(totla_price_c_id)
+    });
+  });
+</script>
+
+{% endblock %}
